@@ -28,11 +28,26 @@ function App() {
         return newDiceArray
     }
 
+    // rolls the dice 
+    function rollDice() {
+        setDice(oldDice => oldDice.map(die => {
+            return !die.isHeld ? generateNewDie() : die
+        }))
+    }
+
+    // holds a die
+    function holdDie(id) {
+        setDice(oldDice => oldDice.map(die => {
+            return die.id === id ? {...die, isHeld: !die.isHeld} : die
+        }))
+    }
+
     const diceElement = dice.map(die => (
         <Die 
             key={die.id}
             value={die.value}
             isHeld={die.isHeld}
+            holdDie={() => holdDie(die.id)}
         />
     ))
 
@@ -50,7 +65,7 @@ function App() {
                 {diceElement}
             </div>
 
-            <button className='bg-light-blue py-[10px] px-[21px] rounded-[4px] w-[150px] font-bold text-xl text-white mx-auto mt-6 transition-transform duration-300 active:scale-[0.9]'>
+            <button onClick={rollDice} className='bg-light-blue py-[10px] px-[21px] rounded-[4px] w-[150px] font-bold text-xl text-white mx-auto mt-6 transition-transform duration-300 active:scale-[0.9]'>
                 Roll
             </button>
         </div>
