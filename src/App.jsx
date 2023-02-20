@@ -1,10 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
 
 import Die from './components/Die'
+import WinnerPopUp from './components/WinnerPopUp'
 
 function App() {
     const [dice, setDice] = useState(getAllNewDice())
+    const [playerStats, setPlayerStats] = useState({
+        noOfRolls: 0,
+        timeTaken: 0,
+        bestTime: 0
+    })
+    const [tenzies, setTenzies] = useState(false)
+
+    // this useEffect will determine if the player wins
+    useEffect(() => {
+        const isWon = dice.every(die => die.isHeld && die.value === dice[0].value)
+
+        if(isWon) {
+            setTenzies(true)
+        }
+    }, [dice])
 
     // this will generate a new die object
     function generateNewDie() {
@@ -30,6 +46,7 @@ function App() {
 
     // rolls the dice 
     function rollDice() {
+        setPlayerStats(oldStats => ({...oldStats, noOfRolls: oldStats.noOfRolls + 1}))
         setDice(oldDice => oldDice.map(die => {
             return !die.isHeld ? generateNewDie() : die
         }))
@@ -40,6 +57,13 @@ function App() {
         setDice(oldDice => oldDice.map(die => {
             return die.id === id ? {...die, isHeld: !die.isHeld} : die
         }))
+    }
+
+    // new game
+    function newGame() {
+        setPlayerStats(oldStats => ({...oldStats, noOfRolls: 0}))
+        setTenzies(false)
+        setDice(getAllNewDice())
     }
 
     const diceElement = dice.map(die => (
@@ -68,6 +92,15 @@ function App() {
             <button onClick={rollDice} className='bg-light-blue py-[10px] px-[21px] rounded-[4px] w-[150px] font-bold text-xl text-white mx-auto mt-6 transition-transform duration-300 active:scale-[0.9]'>
                 Roll
             </button>
+
+            {
+                /* This will render if the player has won */
+                tenzies && 
+                    <WinnerPopUp 
+                        newGame={newGame} 
+                        noOfRolls={playerStats.noOfRolls}
+                    />
+            }
         </div>
     </main>
     )

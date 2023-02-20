@@ -1,7 +1,6 @@
 import React from 'react'
 
 function Die({ value, isHeld, holdDie }) {
-
     const diceColor = isHeld ? "bg-light-green" : "bg-white"
 
     return (
