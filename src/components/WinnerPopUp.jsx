@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactConfetti from 'react-confetti';
 
-function WinnerPopUp({ newGame, noOfRolls }) {
+function WinnerPopUp({ newGame, noOfRolls, timeTaken, bestTime }) {
     return (
         <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center'>
             <ReactConfetti />
@@ -10,8 +10,10 @@ function WinnerPopUp({ newGame, noOfRolls }) {
                 <p className='text-medium-blue text-md'>Congratulations on winning tenzies.</p>
                 <div className='font-bold'>
                     <h3>Number of Rolls: <span className='font-normal'>{noOfRolls}</span></h3>
-                    <h3>Time taken: <span className='font-normal'>10m 40s</span></h3>
-                    <h3>Best Time: <span className='font-normal'>6m 30s</span></h3>
+                    <h3>
+                        Time taken: <span className='font-normal'>{timeTaken.minutes}m {timeTaken.seconds}s</span>
+                    </h3>
+                    <h3>Best Time: <span className='font-normal'>{bestTime.minutes}m {bestTime.seconds}s</span></h3>
                 </div>
                 <button  
                     onClick={newGame}

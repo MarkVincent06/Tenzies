@@ -1,15 +1,34 @@
 import { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
+import { useStopwatch } from 'react-timer-hook';
 
 import Die from './components/Die'
 import WinnerPopUp from './components/WinnerPopUp'
 
 function App() {
+    // this const is a stopwatch
+    const {
+        seconds,
+        minutes,
+        hours,
+        days,
+        isRunning,
+        start,
+        pause,
+        reset,
+    } = useStopwatch({ autoStart: true });
+
     const [dice, setDice] = useState(getAllNewDice())
     const [playerStats, setPlayerStats] = useState({
         noOfRolls: 0,
-        timeTaken: 0,
-        bestTime: 0
+        timeTaken: {
+            seconds: seconds,
+            minutes: minutes
+        },
+        bestTime: {
+            seconds: 30,
+            minutes: 1
+        }
     })
     const [tenzies, setTenzies] = useState(false)
 
@@ -18,6 +37,8 @@ function App() {
         const isWon = dice.every(die => die.isHeld && die.value === dice[0].value)
 
         if(isWon) {
+            pause() // pauses game time
+            manageTime()
             setTenzies(true)
         }
     }, [dice])
@@ -61,9 +82,30 @@ function App() {
 
     // new game
     function newGame() {
+        reset() // resets game time
         setPlayerStats(oldStats => ({...oldStats, noOfRolls: 0}))
         setTenzies(false)
         setDice(getAllNewDice())
+    }
+
+    // manages time
+    function manageTime() {
+        const bestTime = playerStats.bestTime
+       
+        if(minutes <= bestTime.minutes && seconds <= bestTime.seconds) {
+            setPlayerStats(oldStats => ({...oldStats, 
+                bestTime: {
+                    seconds: seconds,
+                    minutes: minutes
+                },
+                timeTaken: {
+                    seconds: seconds, 
+                    minutes: minutes
+                }
+            }))
+        } else {
+            setPlayerStats(oldStats => ({...oldStats, timeTaken: {seconds: seconds, minutes: minutes}}))
+        }
     }
 
     const diceElement = dice.map(die => (
@@ -99,6 +141,8 @@ function App() {
                     <WinnerPopUp 
                         newGame={newGame} 
                         noOfRolls={playerStats.noOfRolls}
+                        timeTaken={playerStats.timeTaken}
+                        bestTime={playerStats.bestTime}
                     />
             }
         </div>
