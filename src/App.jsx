@@ -145,6 +145,12 @@ function App() {
                         bestTime={playerStats.bestTime}
                     />
             }
+
+            <small className='font-light mt-[3rem]'>created by: <a 
+                href="https://www.facebook.com/markvincentcleofe06/" 
+                target={'_blank'}
+                className="underline-offset-4 font-bold hover:text-light-blue transition-color duration-300"
+                >Mark Vincent Cleofe</a></small>
         </div>
     </main>
     )
